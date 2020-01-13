@@ -118,13 +118,18 @@ recorderApp.controller('RecorderController', [ '$scope' , function($scope) {
             }
 		};
 
-		if(navigator.webkitGetUserMedia)
+		if (navigator.mediaDevices) {
+			const promise = navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+			promise
+				.then($scope.gotUserMedia)
+				.catch($scope.userMediaFailed);
+		}
+		else if(navigator.webkitGetUserMedia)
 			navigator.webkitGetUserMedia({ video: false, audio: true }, $scope.gotUserMedia, $scope.userMediaFailed);
 		else if(navigator.mozGetUserMedia)
 			navigator.mozGetUserMedia({ video: false, audio: true }, $scope.gotUserMedia, $scope.userMediaFailed);
 		else
 			navigator.getUserMedia({ video: false, audio: true }, $scope.gotUserMedia, $scope.userMediaFailed);
-				
 	};
 
 	$scope.userMediaFailed = function(code) {
